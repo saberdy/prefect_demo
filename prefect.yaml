@@ -1,0 +1,36 @@
+# Welcome to your prefect.yaml file! You can use this file for storing and managing
+# configuration for deploying your flows. We recommend committing this file to source
+# control along with your flow code.
+
+# Generic metadata about this project
+name: prefect
+prefect-version: 2.14.13
+
+# build section allows you to manage and build docker images
+build:
+
+# push section allows you to manage if and how this project is uploaded to remote locations
+push:
+
+# pull section allows you to provide instructions for cloning this project in remote locations
+pull:
+- prefect.deployments.steps.git_clone:
+    # repository: git@gitlab.com:saberdy/prefect_demo.git
+    repository: https://gitlab.com/saberdy/prefect_demo.git
+    branch: master
+    access_token: glpat-oquVHZssxayWJwF4A-hJ
+
+# the deployments section allows you to provide configuration for deploying flows
+deployments:
+- name: my-first-deployment
+  version:
+  tags: []
+  description:
+  schedule: {}
+  flow_name:
+  entrypoint: managed_prefect_cli_cloud_deployment.py:get_repo_info
+  parameters: {}
+  work_pool:
+    name: my-managed-pool
+    work_queue_name:
+    job_variables: {}

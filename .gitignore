@@ -1,5 +1,6 @@
 # basename $(VIRTUAL_ENV) and Python cache files
 .prefect
+.prefect_demo
 __pycache__
 
 # 
