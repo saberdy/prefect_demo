@@ -3,7 +3,7 @@ from prefect import flow
 # from prefect.runner.storage import GitRepository
 # from prefect.runner.storage import GitLabRepository
 from prefect_gitlab import GitLabRepository
-from prefect_gitlab_credentials import GitLabCredentials
+from prefect_gitlab.credentials import GitLabCredentials
 from prefect.blocks.system import Secret
 
 # gitlab_credentials_block = GitLabCredentials.load("gl-prefect-block")
