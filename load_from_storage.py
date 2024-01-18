@@ -2,18 +2,31 @@ from datetime import datetime
 from prefect import flow
 # from prefect.runner.storage import GitRepository
 # from prefect.runner.storage import GitLabRepository
-from prefect_gitlab.repositories import GitLabRepository
-# from prefect.blocks.system import Secret
-from prefect_gitlab import GitLabCredentials
+from prefect_gitlab import GitLabRepository
+from prefect_gitlab_credentials import GitLabCredentials
+from prefect.blocks.system import Secret
 
-gitlab_credentials_block = GitLabCredentials.load("gl-prefect-block")
-gitlab_repository_block = GitLabRepository.load("my-private-gitlab-block")
+# gitlab_credentials_block = GitLabCredentials.load("gl-prefect-block")
+# gitlab_repository_block = GitLabRepository.load("my-private-gitlab-block")
 
 
 @flow(retries=3, retry_delay_seconds=5, log_prints=True)
 def dummy_flow(date: datetime = datetime.now()):
     print(f"It was {date.strftime('%A')} on {date.isoformat()}")
 
+
+gitlab_credentials = GitLabCredentials(
+    personal_access_token=Secret.load("gl-personal-access-token").get(),
+    api_url="https://gitlab.com",  # Adjust if you use a self-hosted GitLab instance
+)
+
+gitlab_repository_block = GitLabRepository(
+    # <your_gitlab_url>
+    url="https://gitlab.com/saberdy/prefect_demo",
+    # <your_branch_name>
+    branch="gl-api-pat",
+    credentials=gitlab_credentials
+)
 
 my_flow = dummy_flow.from_source(
     source=gitlab_repository_block,
