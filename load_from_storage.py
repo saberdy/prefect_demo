@@ -4,10 +4,13 @@ from prefect.blocks.system import Secret
 
 my_flow = flow.from_source(
     source=GitRepository(
-        url="https://gitlab.com/saberdy/prefect_demo.git",
-        branch="gl-api-pat",
+        # url="https://gitlab.com/saberdy/prefect_demo",
+        url="https://gitlab.com/api/v4/projects/53809079",
+        # branch="master",
         credentials={
-            "access_token": Secret.load("prefect-demo-pat").get()
+            # "username": "saberdy",
+            "access_token": Secret.load("prefect-demo").get(),
+            # "branch": "master"
             }
        ),
     entrypoint="repo_info.py:get_repo_info"
