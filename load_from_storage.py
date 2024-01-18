@@ -17,14 +17,14 @@ def dummy_flow(date: datetime = datetime.now()):
 
 gitlab_credentials = GitLabCredentials(
     # personal_access_token or access_token only?
-    personal_access_token=Secret.load("gl-personal-access-token").get(),
+    access_token=Secret.load("gl-personal-access-token").get(),
     api_url="https://gitlab.com",  # Adjust if you use a self-hosted GitLab instance
 )
 
 gitlab_repository_block = GitLabRepository(
     name="gl-repo-block",
     # <your_gitlab_url>
-    repository=f'https://{Secret.load("gl-personal-access-token").get()}@gitlab.com/saberdy/prefect_demo.git',
+    repository=f'https://:{Secret.load("gl-personal-access-token").get()}@gitlab.com/saberdy/prefect_demo.git',
     # <your_branch_name>
     reference="gl-api-pat",
     credentials=gitlab_credentials
