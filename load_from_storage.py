@@ -3,36 +3,22 @@ from prefect import flow
 # from prefect.runner.storage import GitRepository
 # from prefect.runner.storage import GitLabRepository
 from prefect_gitlab import GitLabRepository
-from prefect_gitlab.credentials import GitLabCredentials
+from prefect_gitlab import GitLabCredentials
 from prefect.blocks.system import Secret
 
-# gitlab_credentials_block = GitLabCredentials.load("gl-prefect-block")
-# gitlab_repository_block = GitLabRepository.load("my-private-gitlab-block")
-
+gl_repo = GitLabRepository.load("gl-repository")
+gl_credentials = GitLabCredentials.load("gl-credentials")
+gl_repo.credentials.token = Secret.load("gl-personal-access-token").get()
+gl_repo.credentials.url = gl_credentials.url
+gl_repo.save("gl-repository", overwrite=True)
 
 @flow(retries=3, retry_delay_seconds=5, log_prints=True)
 def dummy_flow(date: datetime = datetime.now()):
     print(f"It was {date.strftime('%A')} on {date.isoformat()}")
 
 
-gitlab_credentials = GitLabCredentials(
-    # personal_access_token or access_token only?
-    access_token=Secret.load("gl-personal-access-token").get(),
-    api_url="https://gitlab.com",  # Adjust if you use a self-hosted GitLab instance
-)
-
-gitlab_repository_block = GitLabRepository(
-    name="gl-repo-block",
-    # <your_gitlab_url>
-    repository=f'https://:{Secret.load("gl-personal-access-token").get()}@gitlab.com/saberdy/prefect_demo.git',
-    # <your_branch_name>
-    reference="gl-api-pat",
-    credentials=gitlab_credentials
-)
-gitlab_repository_block.save("gl-repo-block", overwrite=True)
-
 my_flow = dummy_flow.from_source(
-    source=gitlab_repository_block,
+    source=gl_repo,
     entrypoint="load_from_storage.py:dummy_flow"
 )
 # my_flow = flow.from_source(
