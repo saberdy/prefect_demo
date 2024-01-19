@@ -7,7 +7,7 @@ def dummy_flow(date: datetime = datetime.now()):
 
 
 my_flow = dummy_flow.from_source(
-    source="https://github.com/saberdy/prefect_demo",
+    source="https://github.com/saberdy/prefect_demo.git",
     entrypoint="load_from_storage.py:dummy_flow"
 )
 
