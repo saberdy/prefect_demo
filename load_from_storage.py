@@ -2,15 +2,6 @@ from datetime import datetime
 from prefect import flow
 # from prefect.runner.storage import GitRepository
 # from prefect.runner.storage import GitLabRepository
-from prefect_gitlab import GitLabRepository
-from prefect_gitlab import GitLabCredentials
-from prefect.blocks.system import Secret
-
-gl_repo = GitLabRepository.load("gl-repository")
-gl_credentials = GitLabCredentials.load("gl-credentials")
-gl_repo.credentials.token = Secret.load("gl-personal-access-token").get()
-gl_repo.credentials.url = gl_credentials.url
-gl_repo.save("gl-repository", overwrite=True)
 
 @flow(retries=3, retry_delay_seconds=5, log_prints=True)
 def dummy_flow(date: datetime = datetime.now()):
@@ -18,7 +9,7 @@ def dummy_flow(date: datetime = datetime.now()):
 
 
 my_flow = dummy_flow.from_source(
-    source=gl_repo,
+    source="https://github.com/saberdy/prefect_demo"
     entrypoint="load_from_storage.py:dummy_flow"
 )
 # my_flow = flow.from_source(
